@@ -16,4 +16,4 @@ export const COORDINATOR_TOPIK = "zigbee2mqtt"
 
 export const ZIGBEE_DEVICE_CLASS = "ZigbeeDevice"
 export const SERVICE_DATA_POLL = "poll-service-data"
-export const PREFIX_API = "/modules/smarthome_zigbee_containers"
+export const PREFIX_API = process.env.NEXT_BASE_PATH ?? "/modules/smarthome_zigbee_containers"
