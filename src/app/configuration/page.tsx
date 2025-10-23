@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react"
 import YAML from "js-yaml"
+import { PREFIX_API } from "@/lib/envVar"
 
 export default function ConfigurationPage() {
   const [yamlText, setYamlText] = useState("")
@@ -10,7 +11,7 @@ export default function ConfigurationPage() {
   const [status, setStatus] = useState("")
 
   useEffect(() => {
-    fetch("/app/modules/smarthome_zigbee_containers/configuration")
+    fetch(`${PREFIX_API}/api/configuration`)
       .then(res => res.json())
       .then(data => {
         setYamlText(YAML.dump(data))
@@ -25,7 +26,7 @@ export default function ConfigurationPage() {
   const handleSave = async () => {
     try {
       const parsed = YAML.load(yamlText)
-      const res = await fetch("/app/modules/smarthome_zigbee_containers/configuration", {
+      const res = await fetch(`${PREFIX_API}/api/configuration`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
