@@ -1,6 +1,6 @@
 'use client';
 
-import { COORDINATOR_TOPIK, SERVICE_NAME_IN_DATA, ZIGBEE_SERVICE_COORDINATOR_INFO_PATH } from '@/lib/envVar';
+import { COORDINATOR_TOPIK, PREFIX_API, SERVICE_NAME_IN_DATA, ZIGBEE_SERVICE_COORDINATOR_INFO_PATH } from '@/lib/envVar';
 import { MessageService } from '@/lib/hooks/messageService.hook';
 import { useEffect, useMemo, useState } from 'react';
 import { ZigbeeDevice } from '../types/device';
@@ -41,7 +41,7 @@ export default function Devices() {
     setStatus(null);
 
     try {
-      const res = await fetch('/modules/zigbee_test/api/send-zigbee-command', { method: 'POST' });
+      const res = await fetch(`${PREFIX_API}/api/send-zigbee-command`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         setStatus('✅ Команда отправлена');
@@ -60,7 +60,7 @@ export default function Devices() {
     setStatus(null);
 
     try {
-      const res = await fetch('/modules/zigbee_test/api/send-zigbee-command/device', { method: 'GET' });
+      const res = await fetch(`${PREFIX_API}/api/send-zigbee-command/device`, { method: 'GET' });
       const data = await res.json();
       if (data.success) {
         setStatus('✅ Команда отправлена');
