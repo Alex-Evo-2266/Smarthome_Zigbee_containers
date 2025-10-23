@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 import YAML from "js-yaml"
+import { PREFIX_API } from "@/lib/envVar"
 
 // Monaco Editor подгружаем динамически, чтобы избежать SSR ошибок
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false })
@@ -14,7 +15,7 @@ export default function ConfigurationPage() {
   const [status, setStatus] = useState("")
 
   useEffect(() => {
-    fetch("/app/modules/smarthome_zigbee_containers/configurate")
+    fetch(`${PREFIX_API}/api/configurate`)
       .then(res => res.json())
       .then(data => {
         setYamlText(YAML.dump(data))
@@ -29,7 +30,7 @@ export default function ConfigurationPage() {
   const handleSave = async () => {
     try {
       const parsed = YAML.load(yamlText)
-      const res = await fetch("/app/modules/smarthome_zigbee_containers/configurate", {
+      const res = await fetch(`${PREFIX_API}/api/configurate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
