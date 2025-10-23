@@ -10,6 +10,7 @@
     "generate:pages": "node dist/create_config_files.js"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@types/amqplib": "^0.10.7",
     "@types/ws": "^8.18.1",
     "amqplib": "^0.10.9",

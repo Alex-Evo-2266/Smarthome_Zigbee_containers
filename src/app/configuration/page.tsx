@@ -2,8 +2,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
 import YAML from "js-yaml"
-import { PREFIX_API } from "@/lib/envVar"
+
+// Monaco Editor подгружаем динамически, чтобы избежать SSR ошибок
+const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false })
 
 export default function ConfigurationPage() {
   const [yamlText, setYamlText] = useState("")
@@ -11,7 +14,7 @@ export default function ConfigurationPage() {
   const [status, setStatus] = useState("")
 
   useEffect(() => {
-    fetch(`${PREFIX_API}/api/configurate`)
+    fetch("/app/modules/smarthome_zigbee_containers/configuration")
       .then(res => res.json())
       .then(data => {
         setYamlText(YAML.dump(data))
@@ -26,7 +29,7 @@ export default function ConfigurationPage() {
   const handleSave = async () => {
     try {
       const parsed = YAML.load(yamlText)
-      const res = await fetch(`${PREFIX_API}/api/configurate`, {
+      const res = await fetch("/app/modules/smarthome_zigbee_containers/configuration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
@@ -44,15 +47,22 @@ export default function ConfigurationPage() {
   return (
     <div style={{ padding: 20 }}>
       <h1>Zigbee2MQTT Configuration</h1>
-      <textarea
-        style={{ width: "100%", height: 600, fontFamily: "monospace" }}
-        value={yamlText}
-        onChange={e => setYamlText(e.target.value)}
-      />
-      <div style={{ marginTop: 10 }}>
-        <button onClick={handleSave}>Сохранить</button>
-        <span style={{ marginLeft: 10 }}>{status}</span>
+      <div style={{ height: "70vh", border: "1px solid #ddd", marginBottom: 10 }}>
+        <MonacoEditor
+          height="100%"
+          defaultLanguage="yaml"
+          value={yamlText}
+          onChange={(value) => setYamlText(value ?? "")}
+          theme="vs-dark"
+          options={{
+            automaticLayout: true,
+            minimap: { enabled: false },
+            fontSize: 14,
+          }}
+        />
       </div>
+      <button onClick={handleSave}>Сохранить</button>
+      <span style={{ marginLeft: 10 }}>{status}</span>
     </div>
   )
 }
