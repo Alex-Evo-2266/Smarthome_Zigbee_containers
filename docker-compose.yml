@@ -1,0 +1,56 @@
+services:
+  zigbee_test:
+    container_name: zigbee_test
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CONTAINER_NAME: zigbee_test
+        PORT: 3000
+        NEXT_BASE_PATH: /modules/zigbee_test
+    command: sh -c "cp -r /app/config_local/* /app/config && npm run start"
+    restart: always
+    environment:
+      EXCHANGE_SERVICE_DATA: ${EXCHANGE_SERVICE_DATA}
+      RABITMQ_PORT: ${RABITMQ_PORT}
+      RABITMQ_HOST: ${RABITMQ_HOST}
+      DATA_LISTEN_QUEUE: ${DATA_LISTEN_QUEUE}
+      CONTAINER_NAME: zigbee_test
+      PORT: 3000
+    labels:
+    - traefik.http.routers.zigbee_test__ws.rule=PathPrefix(`/ws/zigbee_test`)
+    - traefik.http.routers.zigbee_test__ws.service=zigbee_test__ws
+    - traefik.http.services.zigbee_test__ws.loadbalancer.server.port=3000
+    - traefik.http.routers.zigbee_test__ws.entrypoints=websecure
+    - traefik.enable=true
+    - traefik.http.routers.zigbee_test_http.rule=PathPrefix(`/modules/zigbee_test`)
+    - traefik.http.routers.zigbee_test_http.entrypoints=web
+    - traefik.http.routers.zigbee_test_http.middlewares=moduleauth@docker,module-zigbee_test-strip
+    - traefik.http.routers.zigbee_test_http.service=zigbee_test
+    - traefik.http.routers.zigbee_test_https.rule=PathPrefix(`/modules/zigbee_test`)
+    - traefik.http.routers.zigbee_test_https.entrypoints=websecure
+    - traefik.http.routers.zigbee_test_https.middlewares=moduleauth@docker,module-zigbee_test-strip
+    - traefik.http.routers.zigbee_test_https.tls=true
+    - traefik.http.routers.zigbee_test_https.service=zigbee_test
+    - traefik.http.services.zigbee_test.loadbalancer.server.port=3000
+    - traefik.http.middlewares.module-zigbee_test-strip.stripprefixregex.regex=^/modules/zigbee_test
+    volumes:
+    - ${CONFIGURATE_DIR}/zigbee_test:/app/config
+    networks:
+    - local_sh_network
+  zigbee_test_zigbee2mqtt:
+    container_name: zigbee_test_zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    restart: unless-stopped
+    volumes:
+    - ${CONFIGURATE_DIR}/zigbee_test_zigbee2mqtt:/app/data
+    - /run/udev:/run/udev:ro
+    environment:
+    - TZ=Europe/Moscow
+    privileged: true
+    networks:
+    - local_sh_network
+networks:
+  local_sh_network:
+    name: ${NETWORK_NAME}
+    external: true
