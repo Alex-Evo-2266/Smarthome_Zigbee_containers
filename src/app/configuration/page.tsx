@@ -14,7 +14,7 @@ export default function ConfigurationPage() {
   const [status, setStatus] = useState("")
 
   useEffect(() => {
-    fetch("/app/modules/smarthome_zigbee_containers/configuration")
+    fetch("/app/modules/smarthome_zigbee_containers/configurate")
       .then(res => res.json())
       .then(data => {
         setYamlText(YAML.dump(data))
@@ -29,7 +29,7 @@ export default function ConfigurationPage() {
   const handleSave = async () => {
     try {
       const parsed = YAML.load(yamlText)
-      const res = await fetch("/app/modules/smarthome_zigbee_containers/configuration", {
+      const res = await fetch("/app/modules/smarthome_zigbee_containers/configurate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
