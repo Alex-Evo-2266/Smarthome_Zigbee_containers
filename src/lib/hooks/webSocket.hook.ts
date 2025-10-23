@@ -21,7 +21,7 @@ export const useSocket = (callbacks: MessageCallback[] = []) =>{
     if (socket.current && socket.current.readyState === WebSocket.OPEN) return; // уже подключен
     try{
 
-      const path = `ws://${window.location.host}/ws/${PREFIX_API}`
+      const path = `ws://${window.location.host}/ws${PREFIX_API}`
       socket.current = new WebSocket(path)
 
       socket.current.onmessage = (e) => {
