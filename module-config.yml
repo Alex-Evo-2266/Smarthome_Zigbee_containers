@@ -20,6 +20,7 @@ containers:
         RABITMQ_HOST: ${RABITMQ_HOST}
         API_PATH_PREFIX: /modules/smarthome_zigbee_containers
         CONTAINER_NAME: smarthome_zigbee_containers
+        NEXT_PUBLIC_WS_PREFIX: smarthome_zigbee_containers
         PORT: 3000
       labels:
         - "traefik.http.routers.smarthome_zigbee_containers__ws.rule=PathPrefix(`/ws/smarthome_zigbee_containers`)"

@@ -1,7 +1,7 @@
 'use client';
 
 import {useCallback, useRef} from 'react'
-import { CONTAINER_NAME } from '../envVar';
+import { NEXT_PUBLIC_WS_PREFIX } from '../envVar';
 
 export type ISocketData = {
     type: string
@@ -21,7 +21,7 @@ export const useSocket = (callbacks: MessageCallback[] = []) =>{
     if (socket.current && socket.current.readyState === WebSocket.OPEN) return; // уже подключен
     try{
 
-      const path = `ws://${window.location.host}/ws/${CONTAINER_NAME}`
+      const path = `ws://${window.location.host}/ws/${NEXT_PUBLIC_WS_PREFIX}`
       socket.current = new WebSocket(path)
 
       socket.current.onmessage = (e) => {

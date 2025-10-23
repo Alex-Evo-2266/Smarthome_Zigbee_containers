@@ -1,5 +1,6 @@
 export const PORT = process.env.PORT ?? 3000
 export const CONTAINER_NAME = process.env.CONTAINER_NAME ?? "localhost"
+export const NEXT_PUBLIC_WS_PREFIX = process.env.NEXT_PUBLIC_WS_PREFIX
 
 export const RABITMQ_HOST = process.env.RABITMQ_HOST
 export const RABITMQ_PORT = process.env.RABITMQ_PORT
