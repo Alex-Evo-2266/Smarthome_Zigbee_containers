@@ -12,6 +12,7 @@ containers:
           CONTAINER_NAME: smarthome_zigbee_containers
           PORT: 3000
           NEXT_BASE_PATH: "/modules/smarthome_zigbee_containers"
+          NEXT_PUBLIC_WS_PREFIX: smarthome_zigbee_containers
       command: sh -c "cp -r /app/config_local/* /app/config && npm run start"
       restart: always
       environment:
