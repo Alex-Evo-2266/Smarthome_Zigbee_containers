@@ -6,7 +6,7 @@ const coordinatorConfig = new CoordinatorConfig()
 
 export async function GET() {
   try {
-    return NextResponse.json({topik: coordinatorConfig.coordinatorTopik})
+    return NextResponse.json({topic: coordinatorConfig.coordinatorTopik})
   } catch (err: unknown) {
     return NextResponse.json({ error: (err as {message: string}).message }, { status: 500 })
   }
