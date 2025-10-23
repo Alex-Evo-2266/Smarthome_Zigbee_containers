@@ -42,4 +42,5 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 RUN mkdir -p config
 RUN mkdir -p config_local
+RUN mkdir -p zigbee2mqttConf
 COPY --from=builder /app/config ./config_local

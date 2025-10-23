@@ -42,6 +42,7 @@ containers:
         - "traefik.http.middlewares.module-__MODULE_NAME__-strip.stripprefixregex.regex=^/modules/__MODULE_NAME__"
       volumes:
         - ${CONFIGURATE_DIR}/__MODULE_NAME__:/app/config
+        - ${CONFIGURATE_DIR}/__MODULE_NAME___zigbee2mqtt:/app/zigbee2mqttConf
   - name: __MODULE_NAME___zigbee2mqtt
     config:
       image: koenkk/zigbee2mqtt

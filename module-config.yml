@@ -42,6 +42,7 @@ containers:
         - "traefik.http.middlewares.module-smarthome_zigbee_containers-strip.stripprefixregex.regex=^/modules/smarthome_zigbee_containers"
       volumes:
         - ${CONFIGURATE_DIR}/smarthome_zigbee_containers:/app/config
+        - ${CONFIGURATE_DIR}/smarthome_zigbee_containers_zigbee2mqtt:/app/zigbee2mqttConf
   - name: smarthome_zigbee_containers_zigbee2mqtt
     config:
       image: koenkk/zigbee2mqtt

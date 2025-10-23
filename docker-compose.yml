@@ -38,6 +38,7 @@ services:
     - traefik.http.middlewares.module-smarthome_zigbee_containers-strip.stripprefixregex.regex=^/modules/smarthome_zigbee_containers
     volumes:
     - ${CONFIGURATE_DIR}/smarthome_zigbee_containers:/app/config
+    - ${CONFIGURATE_DIR}/smarthome_zigbee_containers_zigbee2mqtt:/app/zigbee2mqttConf
     networks:
     - local_sh_network
   smarthome_zigbee_containers_zigbee2mqtt:
