@@ -1,50 +1,50 @@
-name: Smarthome_Zigbee_containers
-name_module: Smarthome_Zigbee_containers
+name: smarthome_zigbee_containers
+name_module: smarthome_zigbee_containers
 multiply: false
 type: docker
 containers:
-  - name: Smarthome_Zigbee_containers
+  - name: smarthome_zigbee_containers
     config:
       build:
         context: .
         dockerfile: Dockerfile
         args:
-          CONTAINER_NAME: Smarthome_Zigbee_containers
+          CONTAINER_NAME: smarthome_zigbee_containers
           PORT: 3000
-          NEXT_BASE_PATH: "/modules/Smarthome_Zigbee_containers"
+          NEXT_BASE_PATH: "/modules/smarthome_zigbee_containers"
       command: sh -c "cp -r /app/config_local/* /app/config && npm run start"
       restart: always
       environment:
         EXCHANGE_SERVICE_DATA: ${EXCHANGE_SERVICE_DATA}
         RABITMQ_PORT: ${RABITMQ_PORT}
         RABITMQ_HOST: ${RABITMQ_HOST}
-        CONTAINER_NAME: Smarthome_Zigbee_containers
+        CONTAINER_NAME: smarthome_zigbee_containers
         PORT: 3000
       labels:
-        - "traefik.http.routers.Smarthome_Zigbee_containers__ws.rule=PathPrefix(`/ws/Smarthome_Zigbee_containers`)"
-        - "traefik.http.routers.Smarthome_Zigbee_containers__ws.service=Smarthome_Zigbee_containers__ws"
-        - "traefik.http.services.Smarthome_Zigbee_containers__ws.loadbalancer.server.port=3000"
-        - "traefik.http.routers.Smarthome_Zigbee_containers__ws.entrypoints=websecure"
+        - "traefik.http.routers.smarthome_zigbee_containers__ws.rule=PathPrefix(`/ws/smarthome_zigbee_containers`)"
+        - "traefik.http.routers.smarthome_zigbee_containers__ws.service=smarthome_zigbee_containers__ws"
+        - "traefik.http.services.smarthome_zigbee_containers__ws.loadbalancer.server.port=3000"
+        - "traefik.http.routers.smarthome_zigbee_containers__ws.entrypoints=websecure"
         - "traefik.enable=true"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_http.rule=PathPrefix(`/modules/Smarthome_Zigbee_containers`)"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_http.entrypoints=web"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_http.middlewares=moduleauth@docker,module-Smarthome_Zigbee_containers-strip"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_http.service=Smarthome_Zigbee_containers"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_https.rule=PathPrefix(`/modules/Smarthome_Zigbee_containers`)"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_https.entrypoints=websecure"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_https.middlewares=moduleauth@docker,module-Smarthome_Zigbee_containers-strip"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_https.tls=true"
-        - "traefik.http.routers.Smarthome_Zigbee_containers_https.service=Smarthome_Zigbee_containers"
-        - "traefik.http.services.Smarthome_Zigbee_containers.loadbalancer.server.port=3000"
-        - "traefik.http.middlewares.module-Smarthome_Zigbee_containers-strip.stripprefixregex.regex=^/modules/Smarthome_Zigbee_containers"
+        - "traefik.http.routers.smarthome_zigbee_containers_http.rule=PathPrefix(`/modules/smarthome_zigbee_containers`)"
+        - "traefik.http.routers.smarthome_zigbee_containers_http.entrypoints=web"
+        - "traefik.http.routers.smarthome_zigbee_containers_http.middlewares=moduleauth@docker,module-smarthome_zigbee_containers-strip"
+        - "traefik.http.routers.smarthome_zigbee_containers_http.service=smarthome_zigbee_containers"
+        - "traefik.http.routers.smarthome_zigbee_containers_https.rule=PathPrefix(`/modules/smarthome_zigbee_containers`)"
+        - "traefik.http.routers.smarthome_zigbee_containers_https.entrypoints=websecure"
+        - "traefik.http.routers.smarthome_zigbee_containers_https.middlewares=moduleauth@docker,module-smarthome_zigbee_containers-strip"
+        - "traefik.http.routers.smarthome_zigbee_containers_https.tls=true"
+        - "traefik.http.routers.smarthome_zigbee_containers_https.service=smarthome_zigbee_containers"
+        - "traefik.http.services.smarthome_zigbee_containers.loadbalancer.server.port=3000"
+        - "traefik.http.middlewares.module-smarthome_zigbee_containers-strip.stripprefixregex.regex=^/modules/smarthome_zigbee_containers"
       volumes:
-        - ${CONFIGURATE_DIR}/Smarthome_Zigbee_containers:/app/config
-  - name: Smarthome_Zigbee_containers_zigbee2mqtt
+        - ${CONFIGURATE_DIR}/smarthome_zigbee_containers:/app/config
+  - name: smarthome_zigbee_containers_zigbee2mqtt
     config:
       image: koenkk/zigbee2mqtt
       restart: unless-stopped
       volumes:
-        - ${CONFIGURATE_DIR}/Smarthome_Zigbee_containers_zigbee2mqtt:/app/data
+        - ${CONFIGURATE_DIR}/smarthome_zigbee_containers_zigbee2mqtt:/app/data
         - /run/udev:/run/udev:ro
       environment:
         - TZ=Europe/Moscow

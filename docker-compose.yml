@@ -1,13 +1,13 @@
 services:
-  zigbee_test:
-    container_name: zigbee_test
+  smarthome_zigbee_containers:
+    container_name: smarthome_zigbee_containers
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        CONTAINER_NAME: zigbee_test
+        CONTAINER_NAME: smarthome_zigbee_containers
         PORT: 3000
-        NEXT_BASE_PATH: /modules/zigbee_test
+        NEXT_BASE_PATH: /modules/smarthome_zigbee_containers
     command: sh -c "cp -r /app/config_local/* /app/config && npm run start"
     restart: always
     environment:
@@ -15,35 +15,35 @@ services:
       RABITMQ_PORT: ${RABITMQ_PORT}
       RABITMQ_HOST: ${RABITMQ_HOST}
       DATA_LISTEN_QUEUE: ${DATA_LISTEN_QUEUE}
-      CONTAINER_NAME: zigbee_test
+      CONTAINER_NAME: smarthome_zigbee_containers
       PORT: 3000
     labels:
-    - traefik.http.routers.zigbee_test__ws.rule=PathPrefix(`/ws/zigbee_test`)
-    - traefik.http.routers.zigbee_test__ws.service=zigbee_test__ws
-    - traefik.http.services.zigbee_test__ws.loadbalancer.server.port=3000
-    - traefik.http.routers.zigbee_test__ws.entrypoints=websecure
+    - traefik.http.routers.smarthome_zigbee_containers__ws.rule=PathPrefix(`/ws/smarthome_zigbee_containers`)
+    - traefik.http.routers.smarthome_zigbee_containers__ws.service=smarthome_zigbee_containers__ws
+    - traefik.http.services.smarthome_zigbee_containers__ws.loadbalancer.server.port=3000
+    - traefik.http.routers.smarthome_zigbee_containers__ws.entrypoints=websecure
     - traefik.enable=true
-    - traefik.http.routers.zigbee_test_http.rule=PathPrefix(`/modules/zigbee_test`)
-    - traefik.http.routers.zigbee_test_http.entrypoints=web
-    - traefik.http.routers.zigbee_test_http.middlewares=moduleauth@docker,module-zigbee_test-strip
-    - traefik.http.routers.zigbee_test_http.service=zigbee_test
-    - traefik.http.routers.zigbee_test_https.rule=PathPrefix(`/modules/zigbee_test`)
-    - traefik.http.routers.zigbee_test_https.entrypoints=websecure
-    - traefik.http.routers.zigbee_test_https.middlewares=moduleauth@docker,module-zigbee_test-strip
-    - traefik.http.routers.zigbee_test_https.tls=true
-    - traefik.http.routers.zigbee_test_https.service=zigbee_test
-    - traefik.http.services.zigbee_test.loadbalancer.server.port=3000
-    - traefik.http.middlewares.module-zigbee_test-strip.stripprefixregex.regex=^/modules/zigbee_test
+    - traefik.http.routers.smarthome_zigbee_containers_http.rule=PathPrefix(`/modules/smarthome_zigbee_containers`)
+    - traefik.http.routers.smarthome_zigbee_containers_http.entrypoints=web
+    - traefik.http.routers.smarthome_zigbee_containers_http.middlewares=moduleauth@docker,module-smarthome_zigbee_containers-strip
+    - traefik.http.routers.smarthome_zigbee_containers_http.service=smarthome_zigbee_containers
+    - traefik.http.routers.smarthome_zigbee_containers_https.rule=PathPrefix(`/modules/smarthome_zigbee_containers`)
+    - traefik.http.routers.smarthome_zigbee_containers_https.entrypoints=websecure
+    - traefik.http.routers.smarthome_zigbee_containers_https.middlewares=moduleauth@docker,module-smarthome_zigbee_containers-strip
+    - traefik.http.routers.smarthome_zigbee_containers_https.tls=true
+    - traefik.http.routers.smarthome_zigbee_containers_https.service=smarthome_zigbee_containers
+    - traefik.http.services.smarthome_zigbee_containers.loadbalancer.server.port=3000
+    - traefik.http.middlewares.module-smarthome_zigbee_containers-strip.stripprefixregex.regex=^/modules/smarthome_zigbee_containers
     volumes:
-    - ${CONFIGURATE_DIR}/zigbee_test:/app/config
+    - ${CONFIGURATE_DIR}/smarthome_zigbee_containers:/app/config
     networks:
     - local_sh_network
-  zigbee_test_zigbee2mqtt:
-    container_name: zigbee_test_zigbee2mqtt
+  smarthome_zigbee_containers_zigbee2mqtt:
+    container_name: smarthome_zigbee_containers_zigbee2mqtt
     image: koenkk/zigbee2mqtt
     restart: unless-stopped
     volumes:
-    - ${CONFIGURATE_DIR}/zigbee_test_zigbee2mqtt:/app/data
+    - ${CONFIGURATE_DIR}/smarthome_zigbee_containers_zigbee2mqtt:/app/data
     - /run/udev:/run/udev:ro
     environment:
     - TZ=Europe/Moscow

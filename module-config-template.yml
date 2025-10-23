@@ -1,5 +1,5 @@
 name: __MODULE_NAME__
-name_module: Smarthome_Zigbee_containers
+name_module: smarthome_zigbee_containers
 multiply: false
 type: docker
 containers:
