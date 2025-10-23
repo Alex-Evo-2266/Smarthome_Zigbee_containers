@@ -15,11 +15,11 @@ export const useTopic = () => {
         try {
           const res = await fetch(`${PREFIX_API}/api/coordinator/topic`, { method: 'GET' });
           const data = await res.json();
-          if (data.success) {
-            console.log("p0",data)
-            setTopic(data.success)
+          console.log(data)
+          if (data.topik) {
+            setTopic(data.topik)
             setStatus('✅');
-            resData = data.success
+            resData = data.topik
           } else {
             setStatus('❌ Ошибка отправки');
           }

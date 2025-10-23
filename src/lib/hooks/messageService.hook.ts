@@ -44,6 +44,7 @@ export const MessageService = (option: {dataKey?: string, messageType?: string} 
     // }
     
     useEffect(() => {
+        console.log('MessageService connected')
         connectSocket();
         return () => closeSocket(); // закрывать при размонтировании
     }, [connectSocket, closeSocket]);
