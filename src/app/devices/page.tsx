@@ -3,9 +3,9 @@
 import { Devices } from './Devices';
 import { useTopic } from "@/lib/hooks/topic.hook";
 
-export default async function Page() {
+export default function Page() {
   
-  const {topic} = await useTopic();
+  const {topic} = useTopic();
 
   if (!topic) {
     return <p>⚠️ Ошибка: не удалось загрузить topic из конфигурации</p>;
