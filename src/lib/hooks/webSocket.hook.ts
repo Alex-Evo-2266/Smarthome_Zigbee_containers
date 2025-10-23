@@ -49,7 +49,7 @@ export const useSocket = (callbacks: MessageCallback[] = []) =>{
       console.error(e)
       setTimeout(connectSocket,500)
     }
-  },[])
+  },[callbacks])
 
   const closeSocket = useCallback(()=>{
     if(socket.current)

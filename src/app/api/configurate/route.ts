@@ -10,8 +10,8 @@ export async function GET() {
     const file = await fs.readFile(CONFIG_PATH, "utf8")
     const data = yaml.load(file)
     return NextResponse.json(data)
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+  } catch (err: unknown) {
+    return NextResponse.json({ error: (err as {message: string}).message }, { status: 500 })
   }
 }
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const yamlString = yaml.dump(body)
     await fs.writeFile(CONFIG_PATH, yamlString, "utf8")
     return NextResponse.json({ status: "ok" })
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+  } catch (err: unknown) {
+    return NextResponse.json({ error: (err as {message: string}).message }, { status: 500 })
   }
 }

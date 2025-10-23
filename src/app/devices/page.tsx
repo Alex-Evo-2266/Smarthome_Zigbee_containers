@@ -48,7 +48,7 @@ export default function Devices() {
       } else {
         setStatus('❌ Ошибка отправки');
       }
-    } catch (e) {
+    } catch {
       setStatus('⚠️ Ошибка соединения');
     } finally {
       setLoading(false);
@@ -67,7 +67,7 @@ export default function Devices() {
       } else {
         setStatus('❌ Ошибка отправки');
       }
-    } catch (e) {
+    } catch {
       setStatus('⚠️ Ошибка соединения');
     } finally {
       setLoading(false);
