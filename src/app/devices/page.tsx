@@ -1,27 +1,11 @@
-import { promises as fs } from "fs";
-import yaml from "js-yaml";
+'use client';
+
 import { Devices } from './Devices';
-
-const CONFIG_PATH = "/app/zigbee2mqttConf/configuration.yaml";
-
-async function getTopicFromConfig(): Promise<string | null> {
-  try {
-    const file = await fs.readFile(CONFIG_PATH, "utf8");
-    const data = yaml.load(file) as object;
-    if ("mqtt" in data && typeof data.mqtt === 'object' && data.mqtt && "base_topic" in data.mqtt && data?.mqtt?.base_topic && typeof data.mqtt.base_topic === "string") {
-      return data.mqtt.base_topic;
-    }
-    return null;
-  } catch (err) {
-    console.error("Failed to read Zigbee config:", err);
-    return null;
-  }
-}
-
+import { useTopic } from "@/lib/hooks/topic.hook";
 
 export default async function Page() {
   
-  const topic = await getTopicFromConfig();
+  const {topic} = await useTopic();
 
   if (!topic) {
     return <p>⚠️ Ошибка: не удалось загрузить topic из конфигурации</p>;
