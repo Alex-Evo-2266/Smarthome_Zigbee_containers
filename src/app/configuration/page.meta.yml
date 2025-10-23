@@ -1,0 +1,5 @@
+name: configuration
+page_name: configuration
+auth:
+  roles:
+    - admin
