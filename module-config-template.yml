@@ -19,7 +19,7 @@ containers:
         RABITMQ_PORT: ${RABITMQ_PORT}
         RABITMQ_HOST: ${RABITMQ_HOST}
         CONTAINER_NAME: __MODULE_NAME__
-        NEXT_BASE_PATH: /modules/__MODULE_NAME__
+        API_PATH_PREFIX: /modules/__MODULE_NAME__
         PORT: 3000
       labels:
         - "traefik.http.routers.__MODULE_NAME____ws.rule=PathPrefix(`/ws/__MODULE_NAME__`)"
