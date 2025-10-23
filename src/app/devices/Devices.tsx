@@ -37,7 +37,7 @@ export const Devices: React.FC<DevicesProps> = ({topic}) => {
             return Object.values(t)
         }
         return []
-    },[messages])
+    },[messages, topic])
 
     const handleSend = async () => {
     setLoading(true);

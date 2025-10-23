@@ -7,8 +7,8 @@ const CONFIG_PATH = "/app/zigbee2mqttConf/configuration.yaml";
 async function getTopicFromConfig(): Promise<string | null> {
   try {
     const file = await fs.readFile(CONFIG_PATH, "utf8");
-    const data = yaml.load(file) as any;
-    if (data?.mqtt?.base_topic && typeof data.mqtt.base_topic === "string") {
+    const data = yaml.load(file) as object;
+    if ("mqtt" in data && typeof data.mqtt === 'object' && data.mqtt && "base_topic" in data.mqtt && data?.mqtt?.base_topic && typeof data.mqtt.base_topic === "string") {
       return data.mqtt.base_topic;
     }
     return null;
