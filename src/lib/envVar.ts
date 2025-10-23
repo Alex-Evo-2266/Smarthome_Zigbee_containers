@@ -12,8 +12,7 @@ export const ZIGBEE_SERVICE_PATH = "ZigbeeService"
 export const ZIGBEE_SERVICE_COORDINATOR_INFO_PATH = "ZigbeeServiceDataInfo"
 export const ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH = "ZigbeeServiceDataDevice"
 export const MQTT_MESSAGES = "MQTT_messages"
-export const SERVICE_NAME_IN_DATA = ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH
-export const COORDINATOR_TOPIK = "zigbee2mqtt"
+// export const COORDINATOR_TOPIK = "zigbee2mqtt"
 
 export const ZIGBEE_DEVICE_CLASS = "ZigbeeDevice"
 export const SERVICE_DATA_POLL = "poll-service-data"

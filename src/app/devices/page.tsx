@@ -1,39 +1,41 @@
 'use client';
 
-import { COORDINATOR_TOPIK, PREFIX_API, SERVICE_NAME_IN_DATA, ZIGBEE_SERVICE_COORDINATOR_INFO_PATH } from '@/lib/envVar';
+import { PREFIX_API, ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH, ZIGBEE_SERVICE_COORDINATOR_INFO_PATH } from '@/lib/envVar';
 import { MessageService } from '@/lib/hooks/messageService.hook';
 import { useEffect, useMemo, useState } from 'react';
 import { ZigbeeDevice } from '../types/device';
 import { ZigbeeDeviceCard } from '../components/deviceCard';
+import { useTopic } from '@/lib/hooks/topic.hook';
 
 export default function Devices() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [permiteJoin, setPermiteJoin] = useState(false)
+  const {topic} = useTopic()
   const getInfo = (data:string) => {
     const parseData = JSON.parse(data)
     if(!parseData) return
     const data1 = parseData[ZIGBEE_SERVICE_COORDINATOR_INFO_PATH]
     if(!data1) return
-    const coord = data1[COORDINATOR_TOPIK]
+    const coord = data1[topic ?? ""]
     if(!coord) return
     setPermiteJoin(coord.permit_join)
   }
   const {messages} = MessageService(
-    {dataKey:SERVICE_NAME_IN_DATA, messageType: "message_service"},
+    {dataKey:ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH, messageType: "message_service"},
     [{callback: getInfo, messageType: "message_service"}]
   )
   const devices = useMemo<ZigbeeDevice[]>(()=>{
-    if(messages && messages[COORDINATOR_TOPIK])
+    if(messages && messages[topic ?? ""])
     {
-      const t = messages[COORDINATOR_TOPIK] as Record<string,ZigbeeDevice>
+      const t = messages[topic ?? ""] as Record<string,ZigbeeDevice>
       return Object.values(t)
     }
     return []
   },[messages])
 
   useEffect(()=>{
-    console.log(`zigbee: `, messages[COORDINATOR_TOPIK])
+    console.log(`zigbee: `, messages[topic ?? ""])
   },[messages])
 
   const handleSend = async () => {
@@ -78,7 +80,9 @@ export default function Devices() {
     <div>
       <div style={{display: "flex", justifyContent: "space-between"}}>
         <h2>Devices</h2>
-        <div style={{display: "flex", gap: "5px"}}>
+        {
+          topic ? 
+          <div style={{display: "flex", gap: "5px"}}>
           <p>permite join: {String(permiteJoin)}</p>
           <button
             onClick={handleSend}
@@ -110,7 +114,9 @@ export default function Devices() {
           >
             {loading ? 'Отправка...' : 'Перезагрузка'}
           </button>
-        </div>
+        </div>: null
+        }
+        
       </div>
       {status && <p style={{ marginTop: 10 }}>{status}</p>}
       

@@ -62,7 +62,17 @@ export default function ConfigurationPage() {
           }}
         />
       </div>
-      <button onClick={handleSave}>Сохранить</button>
+      <button 
+      style={{
+              padding: '10px 20px',
+              borderRadius: 8,
+              height: "45px",
+              backgroundColor: loading ? '#888' : '#0070f3',
+              color: 'white',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+            }}
+             onClick={handleSave}>Сохранить</button>
       <span style={{ marginLeft: 10 }}>{status}</span>
     </div>
   )
