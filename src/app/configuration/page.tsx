@@ -11,7 +11,7 @@ export default function ConfigurationPage() {
   const [status, setStatus] = useState("")
 
   useEffect(() => {
-    fetch(`${PREFIX_API}/api/configuration`)
+    fetch(`${PREFIX_API}/api/configurate`)
       .then(res => res.json())
       .then(data => {
         setYamlText(YAML.dump(data))
@@ -26,7 +26,7 @@ export default function ConfigurationPage() {
   const handleSave = async () => {
     try {
       const parsed = YAML.load(yamlText)
-      const res = await fetch(`${PREFIX_API}/api/configuration`, {
+      const res = await fetch(`${PREFIX_API}/api/configurate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
