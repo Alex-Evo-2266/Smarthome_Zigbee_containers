@@ -1,6 +1,7 @@
 'use client';
 
 import {useCallback, useRef} from 'react'
+import { PREFIX_API } from '../envVar';
 
 export type ISocketData = {
     type: string
@@ -20,7 +21,7 @@ export const useSocket = (callbacks: MessageCallback[] = []) =>{
     if (socket.current && socket.current.readyState === WebSocket.OPEN) return; // уже подключен
     try{
 
-      const path = `ws://${window.location.host}/ws/zigbee_test`
+      const path = `ws://${window.location.host}/ws/${PREFIX_API}`
       socket.current = new WebSocket(path)
 
       socket.current.onmessage = (e) => {

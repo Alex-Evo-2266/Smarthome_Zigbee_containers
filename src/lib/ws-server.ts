@@ -34,7 +34,7 @@
 import { WebSocketServer } from 'ws';
 import { Server } from 'http';
 import { consumeExchange } from './rabbitmq';
-import { EXCHANGE_SERVICE_DATA } from './envVar';
+import { EXCHANGE_SERVICE_DATA, PREFIX_API } from './envVar';
 
 let wss: WebSocketServer | null = null;
 
@@ -45,7 +45,7 @@ export function startWebSocketServer(server: Server) {
   }
 
   console.log('🟢 Инициализация нового WebSocket сервера...');
-  wss = new WebSocketServer({ server, path: "/ws/zigbee_test" });
+  wss = new WebSocketServer({ server, path: `/ws/${PREFIX_API}` });
 
   wss.on('connection', (ws, req) => {
     console.log(`🔌 Новый клиент подключён [${new Date().toISOString()}]`);

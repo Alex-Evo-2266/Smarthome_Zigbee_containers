@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { MessageCallback, useSocket } from "./webSocket.hook";
-import { Obj1 } from "../models/types";
 
 const optionInit = {
     dataKey:"",
