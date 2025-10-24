@@ -13,83 +13,60 @@ export interface MessageCallback {
   callback: (data: string) => void; // Функция callback, которая принимает любые данные
 }
 
-export const useSocket = (callbacks: MessageCallback[] = []) =>{
+export const useSocket = (callbacks: MessageCallback[] = []) => {
   const socket = useRef<WebSocket | null>(null);
-  const reconnectTimer = useRef<number | undefined>(undefined);
+  const reconnectTimer = useRef<number | null>(null);
 
-  const connectSocket = useCallback(()=>{
-    if (socket.current && socket.current.readyState === WebSocket.OPEN) return; // уже подключен
-    try{
+  const connectSocket = useCallback(() => {
+    if (socket.current && socket.current.readyState === WebSocket.OPEN) return;
 
-      const path = `ws://${window.location.host}/ws/${NEXT_PUBLIC_WS_PREFIX}`
-      socket.current = new WebSocket(path)
+    const path = `ws://${window.location.host}/ws/${NEXT_PUBLIC_WS_PREFIX}`;
+    socket.current = new WebSocket(path);
 
-      socket.current.onmessage = (e) => {
+    socket.current.onopen = () => {
+      console.log("✅ WS connected");
+      if (reconnectTimer.current) {
+        clearInterval(reconnectTimer.current);
+        reconnectTimer.current = null;
+      }
+    };
+
+    socket.current.onmessage = (e) => {
+      try {
         const data: ISocketData = JSON.parse(e.data);
         callbacks.forEach((cb) => {
           if (cb.messageType === data.type) cb.callback(data.data);
         });
-      };
-
-      socket.current.onerror = (err) => {
-        console.error("WS error", err);
-        socket.current?.close();
-      };
-
-      socket.current.onclose = () => {
-        console.log("❌ WS disconnected, reconnecting...");
-        if (!reconnectTimer.current) {
-          reconnectTimer.current = window.setInterval(() => {
-            connectSocket();
-          }, 5000);
-        }
+      } catch (err) {
+        console.error("WS message parse error:", err);
       }
+    };
 
-    }catch(e){
-      console.error(e)
-      setTimeout(connectSocket,500)
+    socket.current.onerror = (err) => {
+      console.error("WS error", err);
+      socket.current?.close();
+    };
+
+    socket.current.onclose = () => {
+      console.log("❌ WS disconnected, reconnecting in 5s...");
+      if (!reconnectTimer.current) {
+        reconnectTimer.current = window.setInterval(() => {
+          connectSocket();
+        }, 5000);
+      }
+    };
+  }, [callbacks]);
+
+  const closeSocket = useCallback(() => {
+    if (socket.current) {
+      socket.current.close();
+      socket.current = null;
     }
-  },[callbacks])
+    if (reconnectTimer.current) {
+      clearInterval(reconnectTimer.current);
+      reconnectTimer.current = null;
+    }
+  }, []);
 
-  const closeSocket = useCallback(()=>{
-    if(socket.current)
-      socket.current.close()
-  },[])
-
-  // const listenSocket = useCallback(()=>{
-  //   connectSocket()
-  //   if(!socket.current) 
-  //     return;
-  //   socket.current.onopen = ()=>
-  //   {
-  //     console.log("socket connect socket");
-  //     window.clearInterval(timerId.current);
-  //     if(!socket.current) return;
-  //     socket.current.onmessage = function(e) {
-  //       console.log(`socket ${e.data}`)
-  //       const data: ISocketData = JSON.parse(e.data);
-  //       console.log(`socket ${data}`)
-  //       console.log(`socket ${data.data}`)
-  //       for(const collback of callbacks){
-  //         if(collback.messageType === data.type)
-  //         {
-  //           collback.callback(data.data)
-  //         }
-  //       }
-  //     }
-  //     socket.current.onerror = closeSocket
-  //     socket.current.onclose = () => {
-  //       console.log("socket desconnect");
-  //       timerId.current = window.setInterval(() => {
-  //         listenSocket();
-  //       }, 10000);
-  //     };
-  //   }
-  // },[closeSocket, connectSocket, callbacks])
-
-  return{
-    connectSocket,
-    closeSocket
-  }
-  
-}
+  return { connectSocket, closeSocket };
+};

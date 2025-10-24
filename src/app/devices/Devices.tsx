@@ -1,43 +1,66 @@
 'use client';
 
 import { PREFIX_API, ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH, ZIGBEE_SERVICE_COORDINATOR_INFO_PATH } from "@/lib/envVar";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ZigbeeDeviceCard } from "../components/deviceCard";
 import { MessageService } from "@/lib/hooks/messageService.hook";
 import { ZigbeeDevice } from "../types/device";
+import { useTopic } from "@/lib/hooks/topic.hook";
 
 interface DevicesProps{
-    topic: string
+    message: Record<string, unknown>
 }
 
-export const Devices: React.FC<DevicesProps> = ({topic}) => {
+function getData(
+  message: Record<string, unknown> | null | unknown,
+  key1: string,
+  base: unknown = null 
+): unknown {
+  if (!message) return base;
+
+  // проверяем, что message реально объект и не массив
+  if (typeof message === "object" && !Array.isArray(message) && key1 in message) {
+    return (message as Record<string, unknown>)[key1];
+  }
+
+  return base;
+}
+
+function getDataArray<T>(
+  message: Record<string, unknown> | null | unknown,
+  key1: string
+): T[] {
+  const data = getData(message, key1, null);
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    // если объект, вернуть Object.values
+    return Object.values(data) as T[];
+  }
+  if (Array.isArray(data)) return data as T[];
+  return [];
+}
+
+export const Devices: React.FC<DevicesProps> = ({message}) => {
+  const {topic} = useTopic();
+
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<string | null>(null);
-    const [permiteJoin, setPermiteJoin] = useState(false)
 
-    const getInfo = useCallback((data:string) => {
-        const parseData = JSON.parse(data)
-        if(!parseData) return
-        const data1 = parseData[ZIGBEE_SERVICE_COORDINATOR_INFO_PATH]
-        if(!data1) return
-        const coord = data1[topic ?? ""]
-        if(!coord) return
-        setPermiteJoin(coord.permit_join)
-    },[topic])
+const devices = useMemo(() => {
+  const pathData = getData(message, ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH, null);
+  return getDataArray<ZigbeeDevice>(pathData, topic ?? "");
+}, [message, topic]);
 
-    const {messages} = MessageService(
-        {dataKey:ZIGBEE_SERVICE_COORDINATOR_DEVICE_PATH, messageType: "message_service"},
-        [{callback: getInfo, messageType: "message_service"}]
-    )
+    const permiteJoin = useMemo(()=>{
+      return getData(
+        getData(
+          getData(message, ZIGBEE_SERVICE_COORDINATOR_INFO_PATH, null),
+          topic ?? "", null),
+        "permit_join",false)
+    },[message, topic])
 
-    const devices = useMemo<ZigbeeDevice[]>(()=>{
-        if(messages && messages[topic ?? ""])
-        {
-            const t = messages[topic ?? ""] as Record<string,ZigbeeDevice>
-            return Object.values(t)
-        }
-        return []
-    },[messages, topic])
+    useEffect(()=>{
+      console.log(devices, permiteJoin)
+    },[devices, permiteJoin])
 
     const handleSend = async () => {
     setLoading(true);
@@ -76,6 +99,11 @@ export const Devices: React.FC<DevicesProps> = ({topic}) => {
       setLoading(false);
     }
   };
+  
+
+    if (!topic) {
+    return <p>⚠️ Ошибка: не удалось загрузить topic из конфигурации</p>;
+  }
 
     return(
         <div>
