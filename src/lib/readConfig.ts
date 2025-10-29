@@ -9,6 +9,10 @@ export class CoordinatorConfig{
     constructor(){
         this.coordinatorTopik = null
 
+        this._reloadTopik()
+    }
+
+    async _reloadTopik(): Promise<void> {
         this.readConf().then(res=>{
             if(typeof(res) === 'object' && res && "mqtt" in res){
                 if(typeof(res.mqtt) === 'object' && res.mqtt && "base_topic" in res.mqtt && typeof(res.mqtt.base_topic) === "string"){
@@ -28,7 +32,10 @@ export class CoordinatorConfig{
     async saveConf(data: object): Promise<void> {
         const yamlString = yaml.dump(data)
         await fs.writeFile(CONFIG_PATH, yamlString, "utf8")
+        await this._reloadTopik()
     }
 
 }
+
+export const coordinatorConfig = new CoordinatorConfig()
 

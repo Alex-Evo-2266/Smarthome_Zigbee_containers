@@ -1,8 +1,6 @@
 // app/modules/smarthome_zigbee_containers/configuration/route.ts
 import { NextResponse } from "next/server"
-import { CoordinatorConfig } from "@/lib/readConfig"
-
-const coordinatorConfig = new CoordinatorConfig()
+import { coordinatorConfig } from "@/lib/readConfig"
 
 export async function GET() {
   try {

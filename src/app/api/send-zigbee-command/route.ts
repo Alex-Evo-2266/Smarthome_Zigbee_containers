@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import { publishToQueue } from '@/lib/rabbitmq';
 import { DATA_LISTEN_QUEUE } from '@/lib/envVar';
-import { CoordinatorConfig } from '@/lib/readConfig';
-
-const coordinatorConfig = new CoordinatorConfig()
+import { coordinatorConfig } from '@/lib/readConfig';
 
 export async function POST() {
   try {
