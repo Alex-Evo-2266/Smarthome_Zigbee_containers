@@ -6,8 +6,8 @@ import dynamic from "next/dynamic"
 import YAML from "js-yaml"
 import { PREFIX_API } from "@/lib/envVar"
 
-// Monaco Editor подгружаем динамически, чтобы избежать SSR ошибок
-const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false })
+// Подгружаем CodeMirror динамически (без SSR)
+const YamlEditor = dynamic(() => import("./yaml-editor"), { ssr: false, loading: () => <p>Загрузка редактора...</p> })
 
 export default function ConfigurationPage() {
   const [yamlText, setYamlText] = useState("")
@@ -35,11 +35,11 @@ export default function ConfigurationPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
       })
-      if (res.ok) setStatus("Сохранено!")
-      else setStatus("Ошибка сохранения")
+      if (res.ok) setStatus("✅ Сохранено!")
+      else setStatus("❌ Ошибка сохранения")
     } catch (e) {
       console.error(e)
-      setStatus("Ошибка: неверный YAML")
+      setStatus("⚠️ Неверный YAML")
     }
   }
 
@@ -49,30 +49,22 @@ export default function ConfigurationPage() {
     <div style={{ padding: 20 }}>
       <h1>Zigbee2MQTT Configuration</h1>
       <div style={{ height: "70vh", border: "1px solid #ddd", marginBottom: 10 }}>
-        <MonacoEditor
-          height="100%"
-          defaultLanguage="yaml"
-          value={yamlText}
-          onChange={(value) => setYamlText(value ?? "")}
-          theme="vs-dark"
-          options={{
-            automaticLayout: true,
-            minimap: { enabled: false },
-            fontSize: 14,
-          }}
-        />
+        <YamlEditor value={yamlText} onChange={setYamlText} />
       </div>
-      <button 
-      style={{
-              padding: '10px 20px',
-              borderRadius: 8,
-              height: "45px",
-              backgroundColor: loading ? '#888' : '#0070f3',
-              color: 'white',
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-             onClick={handleSave}>Сохранить</button>
+      <button
+        style={{
+          padding: "10px 20px",
+          borderRadius: 8,
+          height: "45px",
+          backgroundColor: "#0070f3",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+        onClick={handleSave}
+      >
+        Сохранить
+      </button>
       <span style={{ marginLeft: 10 }}>{status}</span>
     </div>
   )

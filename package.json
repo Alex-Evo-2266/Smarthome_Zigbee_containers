@@ -10,10 +10,13 @@
     "generate:pages": "node dist/create_config_files.js"
   },
   "dependencies": {
+    "@codemirror/lang-yaml": "^6.1.2",
+    "@codemirror/theme-one-dark": "^6.1.3",
     "@monaco-editor/react": "^4.7.0",
     "@types/amqplib": "^0.10.7",
     "@types/ws": "^8.18.1",
     "amqplib": "^0.10.9",
+    "codemirror": "^6.0.2",
     "js-yaml": "^4.1.0",
     "next": "15.5.6",
     "react": "19.1.0",
