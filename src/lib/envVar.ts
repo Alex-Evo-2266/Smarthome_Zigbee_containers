@@ -16,4 +16,4 @@ export const MQTT_MESSAGES = "MQTT_messages"
 
 export const ZIGBEE_DEVICE_CLASS = "ZigbeeDevice"
 export const SERVICE_DATA_POLL = "poll-service-data"
-export const PREFIX_API = process.env.API_PATH_PREFIX ?? "/modules/smarthome_zigbee_containers"
+export const PREFIX_API = process.env.NEXT_PUBLIC_BASE_PATH ?? "/modules/smarthome_zigbee_containers"
