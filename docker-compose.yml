@@ -22,6 +22,7 @@ services:
     labels:
     - traefik.http.routers.smarthome_zigbee_containers__ws.rule=PathPrefix(`/ws/smarthome_zigbee_containers`)
     - traefik.http.routers.smarthome_zigbee_containers__ws.service=smarthome_zigbee_containers__ws
+    - traefik.http.routers.smarthome_zigbee_containers__ws.tls=true
     - traefik.http.services.smarthome_zigbee_containers__ws.loadbalancer.server.port=3000
     - traefik.http.routers.smarthome_zigbee_containers__ws.entrypoints=websecure
     - traefik.enable=true
