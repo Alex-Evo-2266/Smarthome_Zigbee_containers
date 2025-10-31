@@ -19,8 +19,10 @@ export const useSocket = (callbacks: MessageCallback[] = []) => {
 
   const connectSocket = useCallback(() => {
     if (socket.current && socket.current.readyState === WebSocket.OPEN) return;
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
 
-    const path = `ws://${window.location.host}/ws/${NEXT_PUBLIC_WS_PREFIX}`;
+    const path = `${protocol}://${window.location.host}/ws/${NEXT_PUBLIC_WS_PREFIX}`;
+    console.log(path)
     socket.current = new WebSocket(path);
 
     socket.current.onopen = () => {
