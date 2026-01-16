@@ -1,6 +1,64 @@
 // lib/rabbitmq.ts
 import amqp from 'amqplib';
-import {RABITMQ_HOST, RABITMQ_PORT} from './envVar'
+import {DEBUG, RABITMQ_HOST, RABITMQ_PORT} from './envVar'
+
+// export async function consumeExchange(
+//   exchangeName: string,
+//   type: 'fanout' | 'direct' | 'topic',
+//   onMessage: (msg: string) => void,
+//   retryDelay = 5000 // задержка перед повторным подключением (мс)
+// ) {
+//   let connection: amqp.ChannelModel | null = null;
+//   let channel: amqp.Channel | null = null;
+
+//   async function connect() {
+//     try {
+//       console.log(`[RabbitMQ] Connecting to ${RABITMQ_HOST}...`);
+//       connection = await amqp.connect(`amqp://${RABITMQ_HOST}`);
+//       channel = await connection.createChannel();
+
+//       await channel.assertExchange(exchangeName, type, { durable: false });
+//       const q = await channel.assertQueue('', { exclusive: true });
+//       await channel.bindQueue(q.queue, exchangeName, '');
+
+//       console.log(`[RabbitMQ] Connected and consuming from "${exchangeName}"`);
+
+//       channel.consume(
+//         q.queue,
+//         (msg) => {
+//           if (msg?.content) onMessage(msg.content.toString());
+//         },
+//         { noAck: true }
+//       );
+
+//       // 👉 Подписываемся на события закрытия и ошибок
+//       connection.on('error', (err) => {
+//         console.error('[RabbitMQ] Connection error:', err.message);
+//       });
+
+//       connection.on('close', () => {
+//         console.warn('[RabbitMQ] Connection closed. Reconnecting...');
+//         reconnect();
+//       });
+
+//     } catch (err) {
+//       console.error('[RabbitMQ] Connection failed:', (err as Error).message);
+//       reconnect();
+//     }
+//   }
+
+//   function reconnect() {
+//     setTimeout(() => {
+//       connect();
+//     }, retryDelay);
+//   }
+
+//   // запускаем первую попытку подключения
+//   await connect();
+// }
+const isDebug = DEBUG;
+const queueName = 'zigbee2mqtt_page_service';
+
 
 export async function consumeExchange(
   exchangeName: string,
@@ -13,25 +71,34 @@ export async function consumeExchange(
 
   async function connect() {
     try {
-      console.log(`[RabbitMQ] Connecting to ${RABITMQ_HOST}...`);
+      if (isDebug) console.log(`[RabbitMQ] Connecting to ${RABITMQ_HOST}...`);
       connection = await amqp.connect(`amqp://${RABITMQ_HOST}`);
+      if (isDebug) console.log('[RabbitMQ] Connection established');
+
       channel = await connection.createChannel();
+      if (isDebug) console.log('[RabbitMQ] Channel created');
 
       await channel.assertExchange(exchangeName, type, { durable: false });
-      const q = await channel.assertQueue('', { exclusive: true });
-      await channel.bindQueue(q.queue, exchangeName, '');
+      if (isDebug) console.log(`[RabbitMQ] Exchange asserted: ${exchangeName}`);
 
-      console.log(`[RabbitMQ] Connected and consuming from "${exchangeName}"`);
+      const q = await channel.assertQueue(queueName, { exclusive: true });
+      if (isDebug) console.log(`[RabbitMQ] Queue created: ${q.queue}`);
+
+      await channel.bindQueue(queueName, exchangeName, '');
+      if (isDebug) console.log(`[RabbitMQ] Queue bound to exchange: ${exchangeName}`);
 
       channel.consume(
         q.queue,
         (msg) => {
-          if (msg?.content) onMessage(msg.content.toString());
+          if (isDebug) console.log('[RabbitMQ] RAW MESSAGE', msg);
+          if (msg?.content) {
+            if (isDebug) console.log('geven data');
+            onMessage(msg.content.toString());
+          }
         },
         { noAck: true }
       );
 
-      // 👉 Подписываемся на события закрытия и ошибок
       connection.on('error', (err) => {
         console.error('[RabbitMQ] Connection error:', err.message);
       });
@@ -41,11 +108,13 @@ export async function consumeExchange(
         reconnect();
       });
 
+      if (isDebug) console.log(`[RabbitMQ] Connected and consuming from "${exchangeName}"`);
     } catch (err) {
       console.error('[RabbitMQ] Connection failed:', (err as Error).message);
       reconnect();
     }
   }
+
 
   function reconnect() {
     setTimeout(() => {
@@ -56,6 +125,7 @@ export async function consumeExchange(
   // запускаем первую попытку подключения
   await connect();
 }
+
 
 let connection: amqp.ChannelModel | null = null;
 let channel: amqp.Channel | null = null;
