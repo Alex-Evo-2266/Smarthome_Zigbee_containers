@@ -48,7 +48,7 @@ export default function ConfigurationPage() {
   return (
     <div style={{ padding: 20 }}>
       <h1>Zigbee2MQTT Configuration</h1>
-      <div style={{ height: "70vh", border: "1px solid #ddd", marginBottom: 10 }}>
+      <div style={{ height: "70vh", border: "1px solid #ddd", marginBottom: 10, overflowY: "auto" }}>
         <YamlEditor value={yamlText} onChange={setYamlText} />
       </div>
       <button
